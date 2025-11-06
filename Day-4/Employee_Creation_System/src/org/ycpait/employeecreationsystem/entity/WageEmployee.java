@@ -1,3 +1,4 @@
+package org.ycpait.employeecreationsystem.entity;
 
 public class WageEmployee extends Employee {
 
@@ -10,12 +11,10 @@ public class WageEmployee extends Employee {
 	}
 	@Override
 	public double calculateSalary() {
-		System.out.println();
 		return this.basicSalary+this.hours*this.rate;
 	}
 	@Override
 	public void showDetails() {
-		super.showDetails("=");
 		System.out.println(this.id+"	\t"+this.name+"	\t"+calculateSalary());
 	}
 }
