@@ -795,4 +795,12 @@ pom.xml
 </dependency>
 			  
 
-			   
+-----------------------------------------------------------------------------------------------------------------
+8. Spring MVC – Form Submission Workflow
+Create a Spring MVC application:
+ JSP form for registration
+ Controller processes form
+ Model attributes sent to JSP
+ Success JSP page displays submitted details
+Use: @Controller, @RequestMapping, Model, JSP view.
+
