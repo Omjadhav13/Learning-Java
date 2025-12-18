@@ -265,7 +265,21 @@ public class MainApp {
 =======================Servlet Login System==============================
 file->new->dynamic web project
 target runtime
+------------------------------------------------
+<web-app>
 
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.login.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+------------------------------------------------
 src/main/webapp/login.html
 <!DOCTYPE html>
 <html>
@@ -780,4 +794,5 @@ pom.xml
     <scope>runtime</scope>
 </dependency>
 			  
+
 			   
