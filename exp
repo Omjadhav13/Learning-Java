@@ -1,0 +1,632 @@
+Q1]
+
+public class Bank {
+	private int accountNo;
+	private String name;
+	private double balance;
+	
+	
+
+	public Bank(int accountNo, String name, double balance) {
+		this.accountNo = accountNo;
+		this.name = name;
+		this.balance = balance;
+	}
+	
+	public void deposit(double amount) {
+		if(amount>0) {
+			balance +=amount;
+			System.out.println(amount + "deposit successfully.");
+		}else {
+			System.out.println("Invalid deposit amount.");
+		}
+	}
+	
+	public void withdraw(double amount) {
+		if(amount>0 && amount <= balance) {
+			balance -=amount;
+			System.out.println(amount + "withdraw successfully.");
+		}else {
+			System.out.println("Insufficient balanace or invalid amount.");
+		}
+	}
+	
+	public void display() {
+		System.out.println("\nAccount Details:");
+		System.out.println("Account Number:" +accountNo);
+		System.out.println("Name:" +name);
+		System.out.println("Balance: "+balance);
+	}
+	
+
+
+
+	public static void main(String[] args) {
+		Bank acc1 = new Bank(101,"Swapnil Rathod",8000);
+		Bank acc2 = new Bank(102,"Sumit Dhamane",9000);
+		acc1.display();
+		acc2.display();
+
+	}
+
+}
+
+
+Q2]
+
+class Employee{
+	String name;
+	int id;
+	double salary;
+	
+	public Employee(String name, int id, double salary) {
+		this.name = name;
+		this.id = id;
+		this.salary = salary;
+	}
+	
+	double calculatesalary(){
+		return salary;
+	}
+	
+	void display() {
+		System.out.println("Name of the Employee:" +name);
+		System.out.println("ID of the Employee:"+id);
+		System.out.println("Salary of the Employee:"+salary);
+	}
+	
+}
+
+class Manager extends Employee{
+	double incentive;
+
+	public Manager(String name, int id, double salary, double incentive) {
+		super(name, id, salary);
+		this.incentive = incentive;
+	}
+	
+	double calculateSalary() {
+		return salary + incentive;
+	}
+	
+	void display() {
+		System.out.println("Name:"+name);
+		System.out.println("ID:"+id);
+		System.out.println("Salary with Incentive:" +calculateSalary());
+	}
+}
+public class SingleInheritances {
+
+	public static void main(String[] args) {
+		
+		System.out.println("-------Employee Details-------");
+		Employee emp = new Employee("Swapnil",101,80000);
+		emp.display();
+		
+		System.out.println("--------Manager Details-------");
+		Manager mgr = new Manager("Sumit",201,45000,8000);
+		mgr.display();
+		
+	}
+
+}
+
+Q3]
+
+import java.util.Scanner;
+
+abstract class Shape {
+	abstract double area();
+	abstract double perimeter();
+}
+
+class Circle extends Shape{
+	double radius;
+	
+	Circle(double radius){
+		this.radius=radius;
+	}
+	
+	@Override
+	double area() {
+		return Math.PI*radius*radius;
+	}
+	
+	@Override
+	double perimeter() {
+		return 2 * Math.PI* radius;
+	}
+}
+
+class Rectangle extends Shape {
+	double l,w;
+
+	Rectangle(double l, double w) {
+		this.l = l;
+		this.w = w;
+	}
+	
+	@Override
+	double area() {
+		return l*w;
+	}
+	
+	@Override
+	double perimeter() {
+		return 2*(l+w);
+	}
+}
+public class ShapeDemo {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("Enter radius of Circle:");
+		double r = sc.nextDouble();
+		Shape circle = new Circle(r);
+		
+		System.out.print("Enter length of Rectangle:");
+		double l = sc.nextDouble();
+		System.out.println("Enter Width of Rectangle:");
+		double w = sc.nextDouble();
+		Shape rectangle = new Rectangle(l,w);
+		
+		
+        System.out.println("\n--- Circle ---");
+        System.out.println("Area: " + circle.area());
+        System.out.println("Perimeter: " + circle.perimeter());
+
+        
+        System.out.println("\n--- Rectangle ---");
+        System.out.println("Area: " + rectangle.area());
+        System.out.println("Perimeter: " + rectangle.perimeter());
+
+		
+	}
+
+}
+
+Q4]
+
+interface Printable {
+	void print();
+}
+
+interface Showable{
+	void show();
+}
+
+class Report implements Printable,Showable{
+	
+	@Override
+	public void print() {
+		System.out.println("Printing Report...");
+	}
+	
+	@Override
+	public void show() {
+		System.out.println("Displaying Report Details..");
+	}
+	
+	public void combinedMessage() {
+		System.out.println("Report printed and displayed successfully!");
+	}
+}
+
+public class MultipleInterfaceDemo {
+
+	public static void main(String[] args) {
+		Report report = new Report();
+		
+		report.print();
+		report.show();
+		report.combinedMessage();
+
+	}
+
+}
+
+Q5]
+
+package prac7;
+
+public class InvalidAgeException extends Exception {
+
+	public InvalidAgeException(String msg) {
+		super(msg);
+	}
+
+
+}
+
+
+
+package prac7;
+
+import java.util.Scanner;
+
+public class ArrayS {
+
+	public static void Age (int age)throws InvalidAgeException{
+		if(age<18) {
+			throw new InvalidAgeException("Invalid age");
+		}
+		else {
+			System.out.println("success");
+		}
+	
+	}
+	
+	public static void main(String[] args)  {
+		Scanner sc=new Scanner(System.in);
+		System.out.print("Enter age: ");
+        int age = sc.nextInt();
+        try {
+			Age(age);
+		} catch (InvalidAgeException e) {
+			// TODO Auto-generated catch block
+		System.out.println(e.getMessage());
+		}
+	}
+
+}
+
+
+Q6]
+
+
+package pack1;
+
+public class A {
+
+	protected void display() {
+		System.out.println("Protected display() of class A in pack1");
+	}
+
+}
+
+package pack2;
+
+import pack1.A;
+public class B extends A {
+
+	public void callDisplay() {
+		display();
+	}
+
+}
+
+
+import pack2.B;
+public class MainDemo {
+
+	public static void main(String[] args) {
+		B obj = new B();
+		obj.callDisplay();
+
+	}
+
+}
+
+Q7]
+
+package prac7;
+
+import java.util.Iterator;
+
+public class Student implements Iterator{
+	private int id;
+	private String name;
+	private int age;
+	public Student(int id, String name, int age) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.age = age;
+	}
+
+	public void display() {
+		System.out.println( "Student [id=" + id + ", name=" + name + ", age=" + age + "]");
+	}
+	
+	public void  Search(int id) {
+		System.out.println( "Student [id=" + id + ", name=" + name + ", age=" + age + "]");
+	
+		
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	@Override
+	public boolean hasNext() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object next() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static Iterator<Student> iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+}
+
+
+
+
+package prac7;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+
+public class ArrayS {
+
+	
+	public static void main(String[] args) {
+
+        List<Student> st = new ArrayList<>();
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n1. Register new Student");
+            System.out.println("2. Display details");
+            System.out.println("3. Search Student");
+            System.out.println("4. Delete Student");
+            System.out.println("0. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+
+                case 1:
+                    System.out.print("Enter id: ");
+                    int id = sc.nextInt();
+                    System.out.print("Enter name: ");
+                    String name = sc.next();
+                    System.out.print("Enter age: ");
+                    int age = sc.nextInt();
+
+                    st.add(new Student(id, name, age));
+                    System.out.println("Student registered successfully.");
+                    break;
+
+                case 2:
+                    if (st.isEmpty()) {
+                        System.out.println("No records found.");
+                    } else {
+                        System.out.println("ID\tName\tAge");
+                        Iterator<Student> itr = st.iterator();
+                        while (itr.hasNext()) {
+                            itr.next().display();   // PRINTS
+                        }
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter id to search: ");
+                    int searchId = sc.nextInt();
+                    boolean found = false;
+
+                    for (Student ss : st) {
+                        if (ss.getId() == searchId) {
+                            ss.display();
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        System.out.println("Student not found");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter id to delete: ");
+                    int deleteId = sc.nextInt();
+                    Iterator<Student> delItr = st.iterator();
+                    boolean deleted = false;
+
+                    while (delItr.hasNext()) {
+                        if (delItr.next().getId() == deleteId) {
+                            delItr.remove();
+                            deleted = true;
+                            break;
+                        }
+                    }
+
+                    if (deleted) {
+                        System.out.println("Student deleted successfully");
+                    } else {
+                        System.out.println("Student not found");
+                    }
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program.");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+        } while (choice != 0);
+
+        sc.close();
+    }
+
+}
+
+Q8]
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileIO {
+
+    public static void main(String[] args) {
+
+        try {
+            // Writing to file
+            FileWriter fw = new FileWriter("employee.txt");
+            fw.write("101 Sumit IT 50000\n");
+            fw.write("102 Amit IT 50000\n");
+            fw.write("103 Mohit IT 50000\n");
+            fw.write("104 Om IT 50000\n");
+            fw.write("105 Anuj IT 50000\n");
+            fw.close();
+
+            // Reading from file
+            FileReader fr = new FileReader("employee.txt");
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            br.close();
+            fr.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+Q9]
+public class MutiThread {
+
+    static class NumberThread extends Thread {
+
+        public void run() {
+            for (int i = 1; i <= 10; i++) {
+                System.out.println("Number Thread: " + i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    static class LetterThread implements Runnable {
+
+        public void run() {
+            for (char ch = 'A'; ch <= 'Z'; ch++) {
+                System.out.println("Letter Thread: " + ch);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        NumberThread t1 = new NumberThread();
+
+        LetterThread lt = new LetterThread();
+        Thread t2 = new Thread(lt);
+
+        t1.start();
+        t2.start();
+    }
+}
+
+Q10]
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class JDBCProductDemo {
+
+    public static void main(String[] args) {
+
+        try {
+            // 1. Load MySQL JDBC Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // 2. Establish Connection
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/testdb",
+                    "root",
+                    "root"
+            );
+
+            // 3. Create Table
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS product (" +
+                "pid INT PRIMARY KEY, " +
+                "pname VARCHAR(50), " +
+                "price DOUBLE)"
+            );
+
+            // 4. Insert Record using PreparedStatement
+            PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO product VALUES (?, ?, ?)"
+            );
+            ps.setInt(1, 1);
+            ps.setString(2, "Laptop");
+            ps.setDouble(3, 55000.0);
+            ps.executeUpdate();
+
+            // 5. Retrieve and Display Records
+            ResultSet rs = stmt.executeQuery("SELECT * FROM product");
+            while (rs.next()) {
+                System.out.println(
+                    "PID: " + rs.getInt("pid") +
+                    ", Name: " + rs.getString("pname") +
+                    ", Price: " + rs.getDouble("price")
+                );
+            }
+
+            // 6. Close Connection
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
