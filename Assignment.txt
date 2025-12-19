@@ -1,6 +1,7 @@
 1.
 Step 1: add .jar in library
 
+file->new->java project
 DBConnection
 
 package example.withDAO;
@@ -264,22 +265,8 @@ public class MainApp {
 2.
 =======================Servlet Login System==============================
 file->new->dynamic web project
-target runtime
-------------------------------------------------
-<web-app>
+target runtime->tomcat
 
-    <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.login.LoginServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/login</url-pattern>
-    </servlet-mapping>
-
-</web-app>
-------------------------------------------------
 src/main/webapp/login.html
 <!DOCTYPE html>
 <html>
@@ -352,7 +339,7 @@ public class LoginServlet extends HttpServlet {
 
 3.JSP + EL + JSTL Product Billing Page
 file->new->Dynamic web project
-target runtime
+target runtime->tomcat
 
 add jar file  jstl-1.2.jar
 copy jar file into - src/main/webapp/WEB-INF/lib
@@ -795,12 +782,589 @@ pom.xml
 </dependency>
 			  
 
------------------------------------------------------------------------------------------------------------------
-8. Spring MVC – Form Submission Workflow
-Create a Spring MVC application:
- JSP form for registration
- Controller processes form
- Model attributes sent to JSP
- Success JSP page displays submitted details
-Use: @Controller, @RequestMapping, Model, JSP view.
+
+==========================================================
+login page using JDBC
+============================================================			 
+login.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+<h2>Login Form</h2>
+
+<form action="LoginServlet" method="post">
+    Username: <input type="text" name="username"><br><br>
+    Password: <input type="password" name="password"><br><br>
+    <input type="submit" value="Login">
+</form>
+
+</body>
+</html>
+
+
+web.xml
+<web-app>
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.login.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+
+LoginServlet
+
+package com.login;
+
+import java.io.IOException;
+import java.sql.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+
+public class LoginServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String uname = request.getParameter("username");
+        String pass = request.getParameter("password");
+
+        try {
+            // Load driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create connection
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/login_db",
+                "root",
+                "Root123"
+            );
+
+            // SQL
+            String sql = "SELECT * FROM users WHERE username=? AND password=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, uname);
+            ps.setString(2, pass);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                response.getWriter().println("<h2>Login Successful</h2>");
+                response.getWriter().println("Welcome " + uname);
+            } else {
+                response.getWriter().println("<h2>Login Failed</h2>");
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+signup.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+</head>
+<body>
+
+<h2>Signup Form</h2>
+
+<form action="SignupServlet" method="post">
+    Username: <input type="text" name="username" required><br><br>
+    Password: <input type="password" name="password" required><br><br>
+
+    <input type="submit" value="Register">
+</form>
+
+<br>
+<a href="login.html">Already have account? Login</a>
+
+</body>
+</html>
+
+
+SignupServlet
+package com.login;
+
+import java.io.IOException;
+import java.sql.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+
+public class SignUpServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String uname = request.getParameter("username");
+        String pass = request.getParameter("password");
+
+        try {
+            // Load driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Connection
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/login_db",
+                "root",
+                "Root123"
+            );
+
+            // Insert query
+            String sql = "INSERT INTO users VALUES (?, ?)";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, uname);
+            ps.setString(2, pass);
+
+            int i = ps.executeUpdate();
+
+            if (i > 0) {
+                response.getWriter().println("<h2>Signup Successful</h2>");
+                response.getWriter().println("<a href='login.html'>Go to Login</a>");
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            response.getWriter().println("Username already exists!");
+        }
+    }
+}
+
+rnu as- run on server
+http://localhost:9090/LoginUsingJDBC/login.html
+
+
+===========================================================================================
+9.REST API
+
+src/main/java
+package com.example.SpringRESTAPI.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "orders")
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int qty;
+    private double price;
+    private double total;
+
+    // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+}
+
+package com.example.SpringRESTAPI.repo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.SpringRESTAPI.entity.Order;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
+}
+
+
+package com.example.SpringRESTAPI.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.example.SpringRESTAPI.entity.Order;
+import com.example.SpringRESTAPI.repo.OrderRepository;
+
+@RestController
+@RequestMapping("/order")
+public class OrderController {
+
+    private final OrderRepository repo;
+
+    public OrderController(OrderRepository repo) {
+        this.repo = repo;
+    }
+
+    // POST /order
+    @PostMapping
+    public Map<String, Object> createOrder(@RequestBody Order order) {
+
+        double total = order.getQty() * order.getPrice();
+        order.setTotal(total);
+
+        repo.save(order);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("totalAmount", total);
+
+        return response;
+    }
+}
+
+
+
+application.properties
+spring.application.name=SpringRESTAPI
+spring.datasource.url=jdbc:mysql://localhost:3306/orderdb
+spring.datasource.username=root
+spring.datasource.password=Root123
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+
+server.port=9090
+
+
+
+pom.xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+
+
+<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+
+if not working then open cmd in project and mvnw spring-boot:run 
+
+
+==================================================
+login using hibernate
+====================================================
+<h2>Login</h2>
+
+<form action="LoginServlet" method="post">
+    Username: <input type="text" name="username"><br><br>
+    Password: <input type="password" name="password"><br><br>
+    <input type="submit" value="Login">
+</form>
+
+
+<h2>Signup</h2>
+
+<form action="SignupServlet" method="post">
+    Username: <input type="text" name="username"><br><br>
+    Password: <input type="password" name="password"><br><br>
+    <input type="submit" value="Signup">
+</form>
+
+<a href="login.html">Already registered? Login</a>
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>HibernateLoginApp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <dependencies>
+
+    <!-- Hibernate Core -->
+    <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- MySQL Connector -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>8.4.0</version>
+    </dependency>
+
+    <!-- Servlet API -->
+    <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- JPA API -->
+    <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
+</dependencies>
+
+</project>
+
+
+package com.controller;
+
+import com.entity.User;
+import com.util.HibernateUtil;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import org.hibernate.*;
+
+public class SignUpServlet extends HttpServlet {
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse res)
+	        throws ServletException, IOException {
+
+	    res.setContentType("text/html");
+
+	    String uname = req.getParameter("username");
+	    String pass = req.getParameter("password");
+
+	    Session s = null;
+	    Transaction tx = null;
+
+	    try {
+	        User u = new User();
+	        u.setUsername(uname);
+	        u.setPassword(pass);
+
+	        s = HibernateUtil.getSessionFactory().openSession();
+	        tx = s.beginTransaction();
+
+	        s.persist(u);
+	        tx.commit();
+
+	        res.getWriter().println("Signup Successful <a href='login.html'>Login</a>");
+
+	    } catch (Exception e) {
+	        if (tx != null) tx.rollback();
+	        res.getWriter().println("Username already exists!");
+	    } finally {
+	        if (s != null) s.close();
+	    }
+	}
+
+}
+
+
+package com.util;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateUtil {
+
+    private static final SessionFactory factory =
+            new Configuration().configure().buildSessionFactory();
+
+    public static SessionFactory getSessionFactory() {
+        return factory;
+    }
+}
+
+
+package com.entity;
+
+public class User {
+
+}
+
+
+hibernate.cfg.xml
+
+<hibernate-configuration>
+ <session-factory>
+
+  <property name="hibernate.connection.driver_class">
+    com.mysql.cj.jdbc.Driver
+  </property>
+
+  <property name="hibernate.connection.url">
+    jdbc:mysql://localhost:3306/hibernate_login
+  </property>
+
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.connection.password">Root123</property>
+
+  <property name="hibernate.dialect">
+    org.hibernate.dialect.MySQLDialect
+  </property>
+
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.hbm2ddl.auto">update</property>
+
+  <mapping class="com.entity.User"/>
+
+ </session-factory>
+</hibernate-configuration>
+
+
+
+================================spring vc
+======================================
+package com.example.model;
+
+public class User {
+    private String name;
+    private String email;
+    private String password;
+
+    // getters & setters
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+
+
+
+
+
+package com.example.controller;
+
+import com.example.model.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class RegisterController {
+
+    @GetMapping("/register")
+    public String showForm() {
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String submitForm(@ModelAttribute User user, Model model) {
+        model.addAttribute("user", user);
+        return "success";
+    }
+}
+
+
+
+
+register.jsp
+
+<%@ page language="java" %>
+<html>
+<head>
+    <title>Registration</title>
+</head>
+<body>
+<h2>Register</h2>
+
+<form action="register" method="post">
+    Name: <input type="text" name="name"><br><br>
+    Email: <input type="email" name="email"><br><br>
+    Password: <input type="password" name="password"><br><br>
+    <input type="submit" value="Register">
+</form>
+
+</body>
+</html>
+
+
+
+success.jsp
+
+<%@ page language="java" %>
+<html>
+<head>
+    <title>Success</title>
+</head>
+<body>
+<h2>Registration Successful</h2>
+
+Name: ${user.name} <br>
+Email: ${user.email}
+
+</body>
+</html>
+
+
+web.xml
+
+<web-app>
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+
+
+http://localhost:8080/SpringMVCFormApp/register
 
